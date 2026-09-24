@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: summarization-service
+  ssl:
+    bundle:
+      pem:
+        gigachat:
+          truststore:
+            certificate: classpath:ssl/gigachat/Russian_Trusted_Root_CA.cer
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      retries: 5
+      properties:
+        delivery.timeout.ms: 125000
+        request.timeout.ms: 25000
+        spring.json.add.type.headers: false
+      transaction-id-prefix: summarization-tx-
+    consumer:
+      group-id: summarization-service
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+kafka:
+  topics:
+    scheduler-request: ${KAFKA_SUMMARIZATION_REQUEST_TOPIC}
+    scheduler-response: ${KAFKA_SUMMARIZATION_RESPONSE_TOPIC}
+gigachat:
+  auth-url: ${GIGACHAT_AUTH_URL}
+  chat-url: ${GIGACHAT_CHAT_URL}
+  authorization-key: ${GIGACHAT_AUTH_KEY}
+
